@@ -105,7 +105,8 @@ class LYClass:
                 if album:
                     await asyncio.sleep(0.5)  # 间隔80秒
                     last_message_id = max(row.id for row in album)
-                    await client.send_file(self.config['warehouse_chat_id'], album, reply_to=message.id, caption=caption_text, parse_mode='html')
+                    # await client.send_file(self.config['warehouse_chat_id'], album, reply_to=message.id, caption=caption_text, parse_mode='html')
+                    await client.send_file(self.config['warehouse_chat_id'], album,  caption=caption_text, parse_mode='html')
                     print(f">>Forwarded album:{last_message_id}\n")
                     # print(f"{message.id}")
                     # print(f"{album[0].id}")
@@ -119,7 +120,9 @@ class LYClass:
                 if mime_type.startswith('video/'):
                     # 处理视频
                     video = message.media.document
-                    await client.send_file(self.config['warehouse_chat_id'], video, reply_to=message.id, caption=caption_text, parse_mode='html')
+                    # await client.send_file(self.config['warehouse_chat_id'], video, reply_to=message.id, caption=caption_text, parse_mode='html')
+                    
+                    await client.send_file(self.config['warehouse_chat_id'], video,  caption=caption_text, parse_mode='html')
                     print(">>Forwarded video.\n")
                     
                     # 调用新的函数
@@ -127,12 +130,15 @@ class LYClass:
                 else:
                     # 处理文档
                     document = message.media.document
-                    await client.send_file(self.config['warehouse_chat_id'], document, reply_to=message.id, caption=caption_text, parse_mode='html')
+                    # await client.send_file(self.config['warehouse_chat_id'], document, reply_to=message.id, caption=caption_text, parse_mode='html')
+                    await client.send_file(self.config['warehouse_chat_id'], document,  caption=caption_text, parse_mode='html')
                     print(">>Forwarded document.\n")
             elif isinstance(message.media, types.MessageMediaPhoto):
                 # 处理图片
                 photo = message.media.photo
-                await client.send_file(self.config['warehouse_chat_id'], photo, reply_to=message.id, caption=caption_text, parse_mode='html')
+                await client.send_file(self.config['warehouse_chat_id'], photo,  caption=caption_text, parse_mode='html')
+                
+                # await client.send_file(self.config['warehouse_chat_id'], photo, reply_to=message.id, caption=caption_text, parse_mode='html')
                 print(">>Forwarded photo.\n")
             else:
                 print("Received media, but not a document, video, photo, or album.")
