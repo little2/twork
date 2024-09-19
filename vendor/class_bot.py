@@ -93,6 +93,9 @@ class LYClass:
                 caption_parts.append(f"Original: <a href='tg://user?id={message.from_id.user_id}'>{sender_title}</a>")
 
         caption_text = "\n".join(caption_parts)
+
+        if self.config['show_caption'] == 'no':
+            caption_text = None
         
         try:
             if hasattr(message, 'grouped_id') and message.grouped_id:
