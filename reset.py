@@ -225,21 +225,23 @@ async def main():
     bot_root = me.username
     bot_title = f"{me.first_name or ''}{me.last_name or ''}"
     work_status = "free"
-    memo = "OPPO"  # Add a memo variable or value here
+    memo = ""  # Add a memo variable or value here
+    phone = phone_number
 
     try:
         cursor.execute("""
             INSERT INTO bot (
-                bot_id, bot_token, bot_name, user_id, bot_root, bot_title, work_status,memo
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s,%s)
+                bot_id, bot_token, bot_name, user_id, bot_root, bot_title, work_status,phone,memo
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s,%s,%s)
             ON DUPLICATE KEY UPDATE
                 bot_token = VALUES(bot_token),
                 bot_name = VALUES(bot_name),
                 user_id = VALUES(user_id),
                 bot_root = VALUES(bot_root),
                 bot_title = VALUES(bot_title),
+                phone = VALUES(phone),
                 memo      = CONCAT(IFNULL(memo, ''), '\n', VALUES(memo))
-        """, (bot_id, bot_token, bot_name, user_id, bot_root, bot_title, work_status,memo))
+        """, (bot_id, bot_token, bot_name, user_id, bot_root, bot_title, work_status, phone, memo))
         print("✅ bot 信息已写入或更新数据库")
 
         try:
