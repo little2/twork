@@ -43,7 +43,7 @@ try:
 except Exception as e:
     print(f"⚠️ 無法解析 CONFIGURATION：{e}")
 
-print(config, flush=True)
+# print(config, flush=True)
 
 api_id = config['api_id']
 api_hash = config['api_hash']
@@ -151,6 +151,7 @@ async def encrypt_session_file(input_file, output_file, password):
         print(f"Encryption failed with exception: {str(e)}")
 
 async def main():
+    global api_hash,api_id
     try:
         # Attempt to start the client
         print("Attempting to start the client...", flush=True)
@@ -207,9 +208,19 @@ async def main():
 
     me = await client.get_me()
 
-       
+    username = None
+    if me.username is None:
+        try:
+            phone_number2 = phone_number.replace('+', 'p_').replace(' ', '')  # 确保电话号码格式正确
+            await client(UpdateUsernameRequest(phone_number2))  # 设置空字符串即为移除
+            username = phone_number2
+            print("用户名已成功变更。")
+        except Exception as e:
+            print(f"用户名变更失败：{e}") 
+    else:
+        username = me.username   
     
-    print(f'你的用户名: {me.username}',flush=True)
+    print(f'你的用户名: {username}',flush=True)
     print(f'你的ID: {me.id}')
     print(f'你的名字: {me.first_name} {me.last_name or ""}')
     print(f'是否是Bot: {me.bot}',flush=True)
@@ -220,9 +231,9 @@ async def main():
     # ========== 更新 bot 表 ==========
     bot_id = me.id
     bot_token = stringsession
-    bot_name = me.username
+    bot_name = username
     user_id = me.id
-    bot_root = me.username
+    bot_root = username
     bot_title = f"{me.first_name or ''}{me.last_name or ''}"
     work_status = "free"
     memo = ""  # Add a memo variable or value here
@@ -231,8 +242,8 @@ async def main():
     try:
         cursor.execute("""
             INSERT INTO bot (
-                bot_id, bot_token, bot_name, user_id, bot_root, bot_title, work_status,phone,memo
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s,%s,%s)
+                bot_id, bot_token, bot_name, user_id, bot_root, bot_title, work_status, phone, memo, api_id, api_hash
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s,%s,%s, %s,%s)
             ON DUPLICATE KEY UPDATE
                 bot_token = VALUES(bot_token),
                 bot_name = VALUES(bot_name),
@@ -240,8 +251,10 @@ async def main():
                 bot_root = VALUES(bot_root),
                 bot_title = VALUES(bot_title),
                 phone = VALUES(phone),
-                memo      = CONCAT(IFNULL(memo, ''), '\n', VALUES(memo))
-        """, (bot_id, bot_token, bot_name, user_id, bot_root, bot_title, work_status, phone, memo))
+                memo      = CONCAT(IFNULL(memo, ''), '\n', VALUES(memo)),
+                api_id = VALUES(api_id),
+                api_hash = VALUES(api_hash)
+        """, (bot_id, bot_token, bot_name, user_id, bot_root, bot_title, work_status, phone, memo, api_id, api_hash))
         print("✅ bot 信息已写入或更新数据库")
 
         try:
@@ -265,7 +278,7 @@ async def main():
         TARGET_USER_ID = 8150238704           # 接收者 user_id（整数）
 
         result = await client(ImportContactsRequest([contact]))
-        print("导入结果:", result)
+        # print("导入结果:", result)
         target = await client.get_entity(TARGET_USER_ID)     # 7550420493
 
 
