@@ -197,7 +197,7 @@ async def main():
         print("\n✅ 以下是你的 StringSession（可写入 .env）\n")
         print("USER_SESSION_STRING=" + stringsession)
 
-
+    exit(0)
     
     # try:
     #     phone_number2 = phone_number.replace('+', 'p_').replace(' ', '')  # 确保电话号码格式正确
@@ -238,6 +238,8 @@ async def main():
     work_status = "free"
     memo = ""  # Add a memo variable or value here
     phone = phone_number
+
+    
 
     try:
         cursor.execute("""
