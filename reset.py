@@ -87,8 +87,8 @@ session_name = str(api_id) + 'session_name'  # Ensure it matches the uploaded se
 
 # phone_number = '+13859939226'
 
-session_name = phone_number.replace('+', '').replace(' ', '')  # 确保电话号码格式正确
-session_file = session_name + '.session'
+session_name = phone_number.replace('+', '').replace(' ', '') + '_' + str(api_id) # 确保电话号码格式正确
+session_file = session_name  + '.session'
 
 #删除旧的会话文件
 if os.path.exists(session_file):
