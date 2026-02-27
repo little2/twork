@@ -256,6 +256,7 @@ def process_videos():
         tag_seg = ''
         file_name = LZString.extract_meaningful_name(doc.file_name or '') or ''
         content = LZString.clean_text(f"{file_name or ''}\n{doc.caption or ''}")
+        
         content_seg = segment_text(content)
         tag_cn_list = fetch_tag_cn_for_file(doc.file_unique_id)
         if tag_cn_list:
