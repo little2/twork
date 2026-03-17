@@ -8,10 +8,10 @@ import os
 # 加载环境变量
 if not os.getenv('GITHUB_ACTIONS'):
     from dotenv import load_dotenv
-    # load_dotenv(dotenv_path='.20100034.sungfong.env')
+    load_dotenv(dotenv_path='.20100034.sungfong.env')
     # load_dotenv(dotenv_path='.20100034.luzai09man.env')
     # load_dotenv(dotenv_path='.x.env')
-    load_dotenv(dotenv_path='.28817994.get_account.env')
+    # load_dotenv(dotenv_path='.28817994.get_account.env')
     # load_dotenv(dotenv_path='.28817994.luzai.env')
     # load_dotenv(dotenv_path='.25254811.bjd.env', override=True)
     # load_dotenv(dotenv_path='.25299903.warehouse.env', override=True)
