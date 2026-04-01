@@ -12,8 +12,8 @@ import pymysql
 # Check if running in a local development environment
 if not os.getenv('GITHUB_ACTIONS'):
     from dotenv import load_dotenv
-    load_dotenv(dotenv_path='.20100034.sungfong.env')
-    # load_dotenv(dotenv_path='.28817994.get_account.env')
+    # load_dotenv(dotenv_path='.20100034.sungfong.env')
+    load_dotenv(dotenv_path='.24530779.get_account.env')
     # load_dotenv(dotenv_path='.25195066.get_account.env')
 
     # load_dotenv(dotenv_path='.20100034.sungfong.env')
