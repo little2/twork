@@ -200,7 +200,7 @@ async def main():
         print("\n✅ 以下是你的 StringSession（可写入 .env）\n")
         print("USER_SESSION_STRING=" + stringsession)
 
-    exit(0)
+    # exit(0)
     
     # try:
     #     phone_number2 = phone_number.replace('+', 'p_').replace(' ', '')  # 确保电话号码格式正确
