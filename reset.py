@@ -55,7 +55,7 @@ phone_number = config['phone_number']
 
 api_hash="254bd1f456264b81e8b48db4cb927239"
 api_id="25254811"
-phone_number = "+14074274254"
+phone_number = "+14699234886"
 
 assert api_id is not None, "❌ 环境变量 API_ID 没有设置！"
 assert api_hash is not None, "❌ 环境变量 API_HASH 没有设置！"
