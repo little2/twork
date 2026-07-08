@@ -55,7 +55,7 @@ phone_number = config['phone_number']
 
 api_hash="254bd1f456264b81e8b48db4cb927239"
 api_id="25254811"
-phone_number = "+14699234886"
+phone_number = "+918103959661"
 
 assert api_id is not None, "❌ 环境变量 API_ID 没有设置！"
 assert api_hash is not None, "❌ 环境变量 API_HASH 没有设置！"
@@ -128,7 +128,8 @@ async def login():
 
     except RPCError as e:
         # Capture RPC error and display detailed error message
-        print(f"Failed to send verification request, error: {e}", flush=True)        
+        print(f"Failed to send verification request, error: {e}", flush=True)     
+        return e   
 
 
 async def encrypt_session_file(input_file, output_file, password):
@@ -193,10 +194,14 @@ async def main():
         print(f"User is not authorized, starting the login process...{phone_number}", flush=True)
         result = await login()
         print(f"Login result: {result}", flush=True)
+        if "has been banned from" in str(result):
+            print("❌ 该用户已被封禁。", flush=True)
+            return
 
-        stringsession = StringSession.save(client.session)
-        print("\n✅ 以下是你的 StringSession（可写入 .env）\n")
-        print("USER_SESSION_STRING=" + stringsession)
+        elif result:
+            stringsession = StringSession.save(client.session)
+            print("\n✅ 以下是你的 StringSession（可写入 .env）\n")
+            print("USER_SESSION_STRING=" + stringsession)
 
     else:
     
@@ -250,6 +255,21 @@ async def main():
     
 
     try:
+
+        try:
+            await client.edit_2fa(
+                current_password=pw2fa,  # 直接传入旧密码
+                new_password=newpw,      # 设置的新密码
+                hint="HINT"
+            )
+            print("✅ 2FA 密码已更新")
+        except Exception as e:
+            print(f"❌ 更新失败: {e}")
+            if "FROZEN_METHOD_INVALID" in str(e):
+                print("❌ 旧密码无效，请检查 PW2FA 是否正确。")
+                work_status = "frozen"
+
+
         cursor.execute("""
             INSERT INTO bot (
                 bot_id, bot_token, bot_name, user_id, bot_root, bot_title, work_status, phone, memo, api_id, api_hash
@@ -267,15 +287,7 @@ async def main():
         """, (bot_id, bot_token, bot_name, user_id, bot_root, bot_title, work_status, phone, memo, api_id, api_hash))
         print("✅ bot 信息已写入或更新数据库")
 
-        try:
-            await client.edit_2fa(
-                current_password=pw2fa,  # 直接传入旧密码
-                new_password=newpw,      # 设置的新密码
-                hint="HINT"
-            )
-            print("✅ 2FA 密码已更新")
-        except Exception as e:
-            print(f"❌ 更新失败: {e}")
+
 
         # 构造一个要导入的联系人
         contact = InputPhoneContact(
