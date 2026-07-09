@@ -8,7 +8,7 @@ from telethon.tl.types import InputPhoneContact
 import os
 import json
 import pymysql
-
+import socks
 # Check if running in a local development environment
 if not os.getenv('GITHUB_ACTIONS'):
     from dotenv import load_dotenv
@@ -55,7 +55,7 @@ phone_number = config['phone_number']
 
 api_hash="254bd1f456264b81e8b48db4cb927239"
 api_id="25254811"
-phone_number = "+14699234886"
+phone_number = "+254794902726"
 
 assert api_id is not None, "❌ 环境变量 API_ID 没有设置！"
 assert api_hash is not None, "❌ 环境变量 API_HASH 没有设置！"
@@ -98,16 +98,51 @@ session_name = str(api_id) + 'session_name'  # Ensure it matches the uploaded se
 session_name = phone_number.replace('+', '').replace(' ', '') + '_' + str(api_id) # 确保电话号码格式正确
 session_file = session_name  + '.session'
 
+def build_proxy():
+
+
+    
+    proxy_type = os.getenv("TG_PROXY_TYPE", "http").strip().lower()
+    proxy_host = os.getenv("TG_PROXY_HOST", "127.0.0.1").strip()
+    proxy_port = int(os.getenv("TG_PROXY_PORT", "3066") or 0)
+    proxy_rdns = os.getenv("TG_PROXY_RDNS", "1").strip().lower() not in ("0", "false", "no")
+
+    if proxy_type in ("", "none", "direct") or proxy_port <= 0:
+        print("Telegram proxy: direct", flush=True)
+        return None
+
+    proxy_map = {
+        "socks5": socks.SOCKS5,
+        "socks4": socks.SOCKS4,
+        "http": socks.HTTP,
+    }
+    if proxy_type not in proxy_map:
+        raise ValueError(f"Unsupported TG_PROXY_TYPE: {proxy_type}")
+
+    print(f"Telegram proxy: {proxy_type}://{proxy_host}:{proxy_port} rdns={proxy_rdns}", flush=True)
+    return (proxy_map[proxy_type], proxy_host, proxy_port, proxy_rdns)
+
+
 #删除旧的会话文件
 if os.path.exists(session_file):
     try:
-        # os.remove(session_file)
+        os.remove(session_file)
         print(f"已删除旧的会话文件: {session_file}", flush=True)
     except FileNotFoundError:
         print("删除旧的会话文件时未找到文件。", flush=True)
 
-# Create the client
-client = TelegramClient(session_name, api_id, api_hash)
+# # Create the client
+# client = TelegramClient(session_name, api_id, api_hash,proxy=(socks.HTTP, "127.0.0.1", 4066))
+
+client = TelegramClient(
+    session_name,
+    api_id,
+    api_hash,
+    proxy=build_proxy(),
+    connection_retries=10,
+    retry_delay=5,
+    timeout=30,
+)
 
 async def login():
     try:
