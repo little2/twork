@@ -55,7 +55,7 @@ phone_number = config['phone_number']
 
 api_hash="254bd1f456264b81e8b48db4cb927239"
 api_id="25254811"
-phone_number = "+918103959661"
+phone_number = "+62859399117192"
 
 assert api_id is not None, "❌ 环境变量 API_ID 没有设置！"
 assert api_hash is not None, "❌ 环境变量 API_HASH 没有设置！"
@@ -160,6 +160,7 @@ async def encrypt_session_file(input_file, output_file, password):
         print(f"Encryption failed with exception: {str(e)}")
 
 async def main():
+    stringsession = ''
     global api_hash,api_id
     try:
         # Attempt to start the client
